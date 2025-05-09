@@ -11,5 +11,9 @@ import { ShoppingListComponent } from "./shopping-list/shopping-list.component";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Angular-Recipe-Store';
+  loadedFeature = 'recipe';
+
+  onNavigate(feature: string) {
+    this.loadedFeature = feature;
+  }
 }
