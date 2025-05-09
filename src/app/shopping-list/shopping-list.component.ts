@@ -11,15 +11,19 @@ import { Ingredient } from '../shared/ingredient.model';
 export class ShoppingListComponent {
   ingredients: Ingredient[] = [
     {
-      id:'i1',
+      id: 'i1',
       name: 'Apples',
       amount: 5
     },
     {
-      id:'i2',
+      id: 'i2',
       name: 'Tomatoes',
       amount: 10
     },
   ];
+
+  onIngredientAdded(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+  }
 
 }
