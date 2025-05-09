@@ -11,7 +11,17 @@ import { RecipeDetailComponent } from "../recipe-detail/recipe-detail.component"
 })
 export class RecipeListComponent {
   recipes: Recipe[] = [
-    new Recipe('r1', 'A Test Recipe', 'This is a test', 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454'),
-    new Recipe('r2', 'A Test Recipe', 'This is a test', 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454'),
+    {
+      id: 'r1',
+      name: 'A Test Recipe',
+      description: 'This is a test',
+      imagePath: 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454'
+    },
+    {
+      id: 'r1',
+      name: 'A Test Recipe',
+      description: 'This is a test',
+      imagePath: 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454'
+    },
   ];
 }

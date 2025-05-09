@@ -1,3 +1,6 @@
-export class Recipe {
-    constructor(public id: string, public name: string, public description: string, public imagePath: string) { }
+export type Recipe = {
+    id: string;
+    name: string;
+    description: string;
+    imagePath: string;
 }
