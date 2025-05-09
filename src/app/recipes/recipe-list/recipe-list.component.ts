@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 
 import { RecipeItemComponent } from "./recipe-item/recipe-item.component";
-import { Recipe } from '../recipe.modal';
+import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 
 @Component({
