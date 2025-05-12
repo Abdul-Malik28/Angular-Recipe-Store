@@ -1,9 +1,8 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { RecipeService } from '../recipe.service';
-import { Recipe } from '../recipe.model';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -14,6 +13,7 @@ import { Recipe } from '../recipe.model';
 export class RecipeEditComponent implements OnInit {
   id!: number;
   private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   editMode = false;
   // @Input()
@@ -59,6 +59,7 @@ export class RecipeEditComponent implements OnInit {
     } else {
       this.recipeService.addRecipe(this.recipeForm.value);
     }
+    this.onCancel();
   }
 
   onAddIngredient() {
@@ -70,6 +71,10 @@ export class RecipeEditComponent implements OnInit {
         ]),
       })
     );
+  }
+
+  onCancel() {
+    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }
 
   private initForm() {
