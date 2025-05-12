@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 
 import { ShopingEditComponent } from "./shoping-edit/shoping-edit.component";
 import { Ingredient } from '../shared/ingredient.model';
@@ -13,13 +13,22 @@ import { ShoppingListService } from './shopping-list.service';
 export class ShoppingListComponent implements OnInit {
   slService = inject(ShoppingListService);
   ingredients?: Ingredient[];
+  destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.ingredients = this.slService.getIngredients;
 
-    this.slService.ingredientChanged.subscribe((ingredients: Ingredient[]) => {
-      this.ingredients = ingredients;
-      console.log(this.ingredients);
+    // this.slService.ingredientChanged.subscribe((ingredients: Ingredient[]) => {
+    //   this.ingredients = ingredients;
+    //   console.log(this.ingredients);
+    // });
+
+    const sub = this.slService.behaviorSubject$.subscribe({
+      next: (ingredients) => {
+        this.ingredients = ingredients;
+      }
     });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 }
