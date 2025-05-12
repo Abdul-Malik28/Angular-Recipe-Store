@@ -9,9 +9,9 @@ import { HeaderComponent } from './header/header.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  loadedFeature = 'recipe';
+  // loadedFeature = 'recipe';
 
-  onNavigate(feature: string) {
-    this.loadedFeature = feature;
-  }
+  // onNavigate(feature: string) {
+  //   this.loadedFeature = feature;
+  // }
 }

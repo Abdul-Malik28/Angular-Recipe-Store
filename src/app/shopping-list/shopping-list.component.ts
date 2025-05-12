@@ -11,9 +11,9 @@ import { ShoppingListService } from './shopping-list.service';
   styleUrl: './shopping-list.component.css'
 })
 export class ShoppingListComponent implements OnInit {
-  slService = inject(ShoppingListService);
+  private slService = inject(ShoppingListService);
   ingredients?: Ingredient[];
-  destroyRef = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.ingredients = this.slService.getIngredients;

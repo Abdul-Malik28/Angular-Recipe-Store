@@ -12,7 +12,7 @@ export class ShopingEditComponent {
   @ViewChild('nameInput') nameInputRef!: ElementRef;
   @ViewChild('amountInput') amountInputRef!: ElementRef;
 
-  slServie = inject(ShoppingListService);
+  private slServie = inject(ShoppingListService);
 
   onAddItem() {
     const newIngredient: Ingredient = {
