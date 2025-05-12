@@ -10,7 +10,9 @@ import { ShoppingListService } from '../shopping-list/shopping-list.service';
 })
 export class RecipeService {
   // recipeSelected = new EventEmitter<Recipe>();
-  // recipeSelected = new Subject<Recipe>();
+  // recipeSelected$ = new Subject<Recipe>();
+
+  recipeChanged$ = new Subject<Recipe[]>();
 
   slService = inject(ShoppingListService);
 
@@ -62,5 +64,14 @@ export class RecipeService {
       return;
     }
     this.slService.addIngredients(ingredients);
+  }
+
+  addRecipe(recipe: Recipe) {
+    this.recipes.push(recipe);
+    this.recipeChanged$.next(this.recipes.slice());
+  }
+  updateRecipe(index: number, newRecipe: Recipe) {
+    this.recipes[index] = newRecipe;
+    this.recipeChanged$.next(this.recipes.slice());
   }
 }
