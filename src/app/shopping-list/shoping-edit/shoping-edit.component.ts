@@ -52,4 +52,14 @@ export class ShopingEditComponent implements OnInit {
     this.editMode = false;
     form.reset();
   }
+
+  onClear() {
+    this.slForm.reset();
+    this.editMode = false;
+  }
+
+  onDelete(){
+    this.slServie.deleteIngredient(this.editedItemIndex);
+    this.onClear();
+  }
 }
