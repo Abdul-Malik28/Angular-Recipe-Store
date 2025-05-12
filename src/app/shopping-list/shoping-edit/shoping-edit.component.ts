@@ -17,7 +17,7 @@ export class ShopingEditComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   editMode = false;
-  editedItemIndex?: number;
+  editedItemIndex!: number;
   editedItem?: Ingredient;
 
   ngOnInit() {
@@ -36,7 +36,7 @@ export class ShopingEditComponent implements OnInit {
     this.destroyRef.onDestroy(() => subs.unsubscribe());
   }
 
-  onAddItem(form: NgForm) {
+  onSubmit(form: NgForm) {
     const value = form.value;
     const newIngredient: Ingredient = {
       id: Math.random().toString(),
@@ -44,6 +44,12 @@ export class ShopingEditComponent implements OnInit {
       amount: value.amount,
     }
 
-    this.slServie.addIngredient(newIngredient);
+    if (this.editMode) {
+      this.slServie.updateIngredient(this.editedItemIndex, newIngredient);
+    } else {
+      this.slServie.addIngredient(newIngredient);
+    }
+    this.editMode = false;
+    form.reset();
   }
 }

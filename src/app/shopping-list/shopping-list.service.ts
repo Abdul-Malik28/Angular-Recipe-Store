@@ -45,4 +45,9 @@ export class ShoppingListService {
     // this.ingredientChanged.emit(this.ingredients.slice());
     this.behaviorSubject$.next(this.ingredients.slice());
   }
+
+  updateIngredient(index: number, newIngredient: Ingredient) {
+    this.ingredients[index] = newIngredient;
+    this.behaviorSubject$.next(this.ingredients.slice());
+  }
 }
