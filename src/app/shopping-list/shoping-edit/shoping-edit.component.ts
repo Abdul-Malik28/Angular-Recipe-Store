@@ -1,24 +1,25 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+
 import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
 
 @Component({
   selector: 'app-shoping-edit',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './shoping-edit.component.html',
   styleUrl: './shoping-edit.component.css'
 })
 export class ShopingEditComponent {
-  @ViewChild('nameInput') nameInputRef!: ElementRef;
-  @ViewChild('amountInput') amountInputRef!: ElementRef;
 
   private slServie = inject(ShoppingListService);
 
-  onAddItem() {
+  onAddItem(form: NgForm) {
+    const value = form.value;
     const newIngredient: Ingredient = {
       id: Math.random().toString(),
-      name: this.nameInputRef.nativeElement.value,
-      amount: this.amountInputRef.nativeElement.value,
+      name: value.name,
+      amount: value.amount,
     }
 
     this.slServie.addIngredient(newIngredient);
