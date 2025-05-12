@@ -14,23 +14,23 @@ import { ActivatedRoute } from '@angular/router';
 export class RecipeDetailComponent implements OnInit {
   // @Input({ required: true }) recipe!: Recipe;
   recipe!: Recipe;
-  // id!: number;
-  @Input({ required: true }) id!: string;
+  id!: number;
+  // @Input({ required: true }) id!: string;
 
   recipeService = inject(RecipeService);
   activatedRoute = inject(ActivatedRoute);
   destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    // const subs = this.activatedRoute.params.subscribe({
-    //   next: (params) => {
-    //     this.id = +params['id'];
-    //     this.recipe = this.recipeService.getRecipe(this.id);
-    //   }
-    // });
+    const subs = this.activatedRoute.params.subscribe({
+      next: (params) => {
+        this.id = +params['id'];
+        this.recipe = this.recipeService.getRecipe(this.id);
+      }
+    });
 
-    // this.destroyRef.onDestroy(() => subs.unsubscribe());
-    this.recipe = this.recipeService.getRecipe(+this.id);
+    this.destroyRef.onDestroy(() => subs.unsubscribe());
+    // this.recipe = this.recipeService.getRecipe(+this.id);
   }
 
   onAddToShoppingList() {

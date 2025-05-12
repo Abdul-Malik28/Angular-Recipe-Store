@@ -15,8 +15,8 @@ export class RecipeService {
   private recipes: Recipe[] = [
     {
       id: 'r1',
-      name: 'A Test Recipe',
-      description: 'This is a test',
+      name: 'Tasty Vegitable Suip',
+      description: 'A super tasty Suip! - justawesome',
       imagePath: 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454',
       ingredients: [
         {
@@ -32,9 +32,9 @@ export class RecipeService {
     },
     {
       id: 'r2',
-      name: 'Another Test Recipe',
-      description: 'This is a test',
-      imagePath: 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/coconut-squash-dhansak-818351d.jpg?quality=90&resize=500,454',
+      name: 'Big Fat Burger',
+      description: 'What else you need to say?',
+      imagePath: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm5rhBjk7N-QdJu6KFytIl8ow_ZOH9e0-6Vg&s',
       ingredients: [
         {
           id: Math.random().toString(),
