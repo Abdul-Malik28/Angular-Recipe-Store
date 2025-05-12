@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
 import { ShoppingListService } from '../shopping-list.service';
@@ -10,9 +10,31 @@ import { Ingredient } from '../../shared/ingredient.model';
   templateUrl: './shoping-edit.component.html',
   styleUrl: './shoping-edit.component.css'
 })
-export class ShopingEditComponent {
+export class ShopingEditComponent implements OnInit {
+  @ViewChild('f') slForm!: NgForm;
 
   private slServie = inject(ShoppingListService);
+  private destroyRef = inject(DestroyRef);
+
+  editMode = false;
+  editedItemIndex?: number;
+  editedItem?: Ingredient;
+
+  ngOnInit() {
+    const subs = this.slServie.startedEditing$.subscribe({
+      next: (index) => {
+        this.editedItemIndex = index;
+        this.editMode = true;
+        this.editedItem = this.slServie.getIngredient(index);
+        this.slForm.setValue({
+          name: this.editedItem.name,
+          amount: this.editedItem.amount,
+        })
+      }
+    });
+
+    this.destroyRef.onDestroy(() => subs.unsubscribe());
+  }
 
   onAddItem(form: NgForm) {
     const value = form.value;
