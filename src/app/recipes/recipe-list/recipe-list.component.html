@@ -6,7 +6,8 @@
 <hr />
 <div class="row">
     <div class="col-xs-12">
-        @for (recipeEl of recipes; track recipeEl.id) {
+        <!-- Correct usage of @for for looping over a signal -->
+        @for (recipeEl of recipes(); track recipeEl.id) {
         <app-recipe-item [recipe]="recipeEl" [index]="$index" />
         }
     </div>

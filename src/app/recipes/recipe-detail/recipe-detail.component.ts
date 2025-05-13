@@ -16,7 +16,7 @@ export class RecipeDetailComponent implements OnInit {
   recipe!: Recipe;
   // id!: number;
   @Input({ required: true }) set id(id: string) {
-    this.recipe = this.recipeService.getRecipe(+id);
+    this.recipe = this.recipeService.getRecipe(+id)();
   }
 
 
