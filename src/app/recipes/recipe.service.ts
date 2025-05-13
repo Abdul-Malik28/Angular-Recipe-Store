@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import { DataStorageService } from '../shared/data-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,11 @@ import { ShoppingListService } from '../shopping-list/shopping-list.service';
 export class RecipeService {
   // recipeSelected = new EventEmitter<Recipe>();
   // recipeSelected$ = new Subject<Recipe>();
+  recipeAdded$ = new Subject<void>();
+  recipeUpdated$ = new Subject<void>();
 
-  slService = inject(ShoppingListService);
+  private slService = inject(ShoppingListService);
+  private lastId = 0;
 
   // private recipes: Recipe[] = [
   //   {
@@ -65,8 +69,15 @@ export class RecipeService {
 
   setRecipes(recipes: Recipe[]) {
     this.recipes.set(recipes);
-    // this.recipeChanged$.next(this.recipes.slice());
+
+    const maxId = recipes.reduce((max, recipe) => {
+      const idNum = parseInt(recipe.id?.replace('r', ''), 10);
+      return !isNaN(idNum) && idNum > max ? idNum : max;
+    }, 0);
+
+    this.lastId = maxId;
   }
+
 
   getRecipe(id: string) {
     return computed(() => this.recipes().find(r => r.id === id));
@@ -79,16 +90,29 @@ export class RecipeService {
     this.slService.addIngredients(ingredients);
   }
 
-  addRecipe(recipe: Recipe) {
-    this.recipes.update(oldRecipe => [...oldRecipe, recipe]);
-    // this.recipeChanged$.next(this.recipes.slice());
+  addRecipe(recipe: Omit<Recipe, 'id'>) {
+    this.lastId++; // increment
+    const newRecipe: Recipe = {
+      ...recipe,
+      id: `r${this.lastId}`, // assign auto ID
+    };
+
+    this.recipes.update(old => [...old, newRecipe]);
+    this.recipeAdded$.next();
   }
 
+
   updateRecipe(id: string, newRecipe: Recipe) {
-    const updatedRecipes = this.recipes().map(recipe =>
-      recipe.id === id ? newRecipe : recipe
-    );
+    const updatedRecipes = this.recipes().map(recipe => {
+      if (recipe.id === id) {
+        return { ...newRecipe, id: recipe.id };
+      }
+      return recipe;
+    });
+
     this.recipes.set(updatedRecipes);
+
+    this.recipeUpdated$.next();
   }
 
 

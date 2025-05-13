@@ -35,6 +35,9 @@ export class RecipeDetailComponent implements OnInit {
 
     this.destroyRef.onDestroy(() => subs.unsubscribe());
     // this.recipe = this.recipeService.getRecipe(+this.id)();
+    if (!this.recipe) {
+      this.router.navigate(['/recipes']);
+    }
   }
 
   onAddToShoppingList() {
