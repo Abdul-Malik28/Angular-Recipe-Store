@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { DropdownDirective } from '../shared/dropdown.directive';
+import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
   selector: 'app-header',
@@ -15,4 +16,10 @@ export class HeaderComponent {
   // onSelect(feature: string) {
   //   this.featureSelected.emit(feature);
   // }
+
+  constructor(private dsService: DataStorageService) { }
+
+  onSaveData() {
+    this.dsService.storeRecipes();
+  }
 }
