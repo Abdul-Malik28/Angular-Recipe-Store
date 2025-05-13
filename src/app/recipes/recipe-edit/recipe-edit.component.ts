@@ -12,7 +12,7 @@ import { Recipe } from '../recipe.model';
   styleUrl: './recipe-edit.component.css'
 })
 export class RecipeEditComponent implements OnInit {
-  id!: number;
+  id!: string;
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -31,7 +31,7 @@ export class RecipeEditComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.params.subscribe({
       next: (params) => {
-        this.id = +params['id'];
+        this.id = params['id'];
         this.editMode = params['id'] != null;
         console.log(this.editMode);
         this.initForm();
@@ -89,7 +89,7 @@ export class RecipeEditComponent implements OnInit {
     let recipeIngredients = new FormArray([] as FormGroup[]);
 
     if (this.editMode) {
-      const recipe = this.recipeService.getRecipe(+this.id)();
+      const recipe = this.recipeService.getRecipe(this.id)();
       if (recipe) {
         recipeName = recipe.name;
         recipeImagePath = recipe.imagePath;

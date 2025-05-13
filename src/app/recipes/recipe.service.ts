@@ -68,8 +68,8 @@ export class RecipeService {
     // this.recipeChanged$.next(this.recipes.slice());
   }
 
-  getRecipe(index: number) {
-    return computed(() => this.recipes()[index]);
+  getRecipe(id: string) {
+    return computed(() => this.recipes().find(r => r.id === id));
   }
 
   addIngredientsToShoppingList(ingredients?: Ingredient[]) {
@@ -84,12 +84,13 @@ export class RecipeService {
     // this.recipeChanged$.next(this.recipes.slice());
   }
 
-  updateRecipe(index: number, newRecipe: Recipe) {
-    const updatedRecipes = [...this.recipes()];
-    updatedRecipes[index] = newRecipe;
+  updateRecipe(id: string, newRecipe: Recipe) {
+    const updatedRecipes = this.recipes().map(recipe =>
+      recipe.id === id ? newRecipe : recipe
+    );
     this.recipes.set(updatedRecipes);
-    // this.recipeChanged$.next(this.recipes.slice());
   }
+
 
   deleteRecipe(index: number) {
     this.recipes().splice(index, 1);

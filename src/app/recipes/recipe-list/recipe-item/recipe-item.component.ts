@@ -11,6 +11,6 @@ import { Recipe } from '../../recipe.model';
 })
 export class RecipeItemComponent {
   @Input({ required: true }) recipe!: Recipe;
-  @Input({ required: true }) index!: number;
+  @Input({ required: true }) id!: string;
 
 }

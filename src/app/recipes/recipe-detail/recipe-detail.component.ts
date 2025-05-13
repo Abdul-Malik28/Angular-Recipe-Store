@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
 
 import { Recipe } from '../recipe.model';
 import { DropdownDirective } from '../../shared/dropdown.directive';
@@ -13,11 +13,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class RecipeDetailComponent implements OnInit {
   // @Input({ required: true }) recipe!: Recipe;
-  recipe!: Recipe;
-  // id!: number;
-  @Input({ required: true }) set id(id: string) {
-    this.recipe = this.recipeService.getRecipe(+id)();
-  }
+  recipe = signal<Recipe | undefined>(undefined);
+  id!: string;
+  // @Input({ required: true }) set id(id: string) {
+  //   this.recipe = this.recipeService.getRecipe(+id)();
+  // }
 
 
   private recipeService = inject(RecipeService);
@@ -26,19 +26,19 @@ export class RecipeDetailComponent implements OnInit {
   private router = inject(Router);
 
   ngOnInit() {
-    // const subs = this.activatedRoute.params.subscribe({
-    //   next: (params) => {
-    //     this.id = +params['id'];
-    //     this.recipe = this.recipeService.getRecipe(this.id);
-    //   }
-    // });
+    const subs = this.activatedRoute.params.subscribe({
+      next: (params) => {
+        this.id = params['id'];
+        this.recipe.set(this.recipeService.getRecipe(this.id)());
+      }
+    });
 
-    // this.destroyRef.onDestroy(() => subs.unsubscribe());
-    // this.recipe = this.recipeService.getRecipe(+this.id);
+    this.destroyRef.onDestroy(() => subs.unsubscribe());
+    // this.recipe = this.recipeService.getRecipe(+this.id)();
   }
 
   onAddToShoppingList() {
-    this.recipeService.addIngredientsToShoppingList(this.recipe.ingredients);
+    this.recipeService.addIngredientsToShoppingList(this.recipe()?.ingredients);
   }
 
   onEditRecipe() {
