@@ -15,7 +15,7 @@ export class RecipeListComponent implements OnInit {
   @Output() recipeWasSelected = new EventEmitter<Recipe>();
 
   private recipeService = inject(RecipeService);
-  recipes: Recipe[] = this.recipeService.getRecipes;
+  recipes: Recipe[] = this.recipeService.getRecipes();
 
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
@@ -25,6 +25,7 @@ export class RecipeListComponent implements OnInit {
     const sub = this.recipeService.recipeChanged$.subscribe({
       next: (recipes) => {
         this.recipes = recipes;
+        console.log(this.recipes);
       }
     });
 
