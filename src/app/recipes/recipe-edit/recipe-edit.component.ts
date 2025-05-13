@@ -40,26 +40,26 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit() {
-    const newRecipe: Recipe = {
-      id: Math.random().toString(),
-      name: this.recipeForm.value['name'],
-      description: this.recipeForm.value['description'],
-      imagePath: this.recipeForm.value['imagePath'],
-      ingredients: this.recipeForm.value['imagePath'],
-    };
-    if (this.editMode) {
-      this.recipeService.updateRecipe(this.id, newRecipe);
-    } else {
-      this.recipeService.addRecipe(newRecipe);
-    }
+    // const newRecipe: Recipe = {
+    //   id: Math.random().toString(),
+    //   name: this.recipeForm.value['name'],
+    //   description: this.recipeForm.value['description'],
+    //   imagePath: this.recipeForm.value['imagePath'],
+    //   ingredients: this.recipeForm.value['imagePath'],
+    // };
+    // if (this.editMode) {
+    //   this.recipeService.updateRecipe(this.id, newRecipe);
+    // } else {
+    //   this.recipeService.addRecipe(newRecipe);
+    // }
 
     // --- or --- //
 
-    // if (this.editMode) {
-    //   this.recipeService.updateRecipe(this.id, this.recipeForm.value);
-    // } else {
-    //   this.recipeService.addRecipe(this.recipeForm.value);
-    // }
+    if (this.editMode) {
+      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+    } else {
+      this.recipeService.addRecipe(this.recipeForm.value);
+    }
     this.onCancel();
   }
 

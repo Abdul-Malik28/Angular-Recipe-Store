@@ -14,8 +14,8 @@ export class DataStorageService {
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes;
-    console.log(recipes);
-    this.http.put<Recipe[]>('https://angular-recipe-store-59e1c-default-rtdb.firebaseio.com/recipes.json', recipes).subscribe({
+    console.log(recipes());
+    this.http.put<Recipe[]>('https://angular-recipe-store-59e1c-default-rtdb.firebaseio.com/recipes.json', recipes()).subscribe({
       next: (response) => {
         console.log(response);
         // this.recipeService.recipeChanged$.next(response);

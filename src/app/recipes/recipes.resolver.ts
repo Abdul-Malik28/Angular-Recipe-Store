@@ -4,7 +4,6 @@ import { DataStorageService } from "../shared/data-storage.service";
 import { Recipe } from "./recipe.model";
 import { RecipeService } from "./recipe.service";
 import { Observable } from "rxjs";
-import { Ingredient } from "../shared/ingredient.model";
 
 export const recipesResolver: ResolveFn<Signal<Recipe[]> | Observable<Recipe[]>> = (route, state) => {
     const dsService = inject(DataStorageService);
