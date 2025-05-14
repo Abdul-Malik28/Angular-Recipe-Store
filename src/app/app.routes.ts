@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 import { RecipesComponent } from './recipes/recipes.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { routes as recipeRoutes } from './recipes/recipe.routes';
-import { AuthComponent } from './auth/auth/auth.component';
+import { AuthComponent } from './auth/auth.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/recipes', pathMatch: 'full' },
