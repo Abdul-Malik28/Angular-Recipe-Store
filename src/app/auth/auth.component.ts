@@ -1,7 +1,9 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
 import { LoadingSpinnerComponent } from "../shared/loading-spinner/loading-spinner.component";
+import { Observable } from 'rxjs';
+
+import { AuthResponseData, AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -28,23 +30,27 @@ export class AuthComponent {
     const email = form.value.email;
     const password = form.value.password;
 
+    let authObs: Observable<AuthResponseData>;
+
     this.isLoading = true;
 
     if (this.isLoginMode) {
-      // ...
+      authObs = this.authService.login(email, password);
     } else {
-      this.authService.signup(email, password).subscribe({
-        next: (resData) => {
-          console.log(resData);
-          this.isLoading = false;
-        },
-        error: (errorMessage) => {
-          console.log(errorMessage);
-          this.error = errorMessage;
-          this.isLoading = false;
-        },
-      });
+      authObs = this.authService.signup(email, password);
     }
+
+    authObs.subscribe({
+      next: (resData) => {
+        console.log(resData);
+        this.isLoading = false;
+      },
+      error: (errorMessage: Error) => {
+        console.log(errorMessage);
+        this.error = errorMessage.message;
+        this.isLoading = false;
+      },
+    });
 
     form.reset();
   }
