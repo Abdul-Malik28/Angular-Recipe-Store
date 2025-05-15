@@ -5,10 +5,11 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { AuthResponseData, AuthService } from './auth.service';
+import { AlertComponent } from "../shared/alert/alert.component";
 
 @Component({
   selector: 'app-auth',
-  imports: [FormsModule, LoadingSpinnerComponent],
+  imports: [FormsModule, LoadingSpinnerComponent, AlertComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
 })
