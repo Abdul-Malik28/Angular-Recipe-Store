@@ -43,4 +43,8 @@ export class HeaderComponent implements OnInit {
   onFetchData() {
     this.dsService.fetchRecipes().subscribe();
   }
+
+  onLogout() {
+    this.authService.logout();
+  }
 }
