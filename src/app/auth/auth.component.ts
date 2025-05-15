@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LoadingSpinnerComponent } from "../shared/loading-spinner/loading-spinner.component";
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { AuthResponseData, AuthService } from './auth.service';
 
@@ -18,6 +19,7 @@ export class AuthComponent {
 
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -40,10 +42,11 @@ export class AuthComponent {
       authObs = this.authService.signup(email, password);
     }
 
-    authObs.subscribe({
+    const sub = authObs.subscribe({
       next: (resData) => {
         console.log(resData);
         this.isLoading = false;
+        this.router.navigate([ '/recipes']);
       },
       error: (errorMessage: Error) => {
         console.log(errorMessage);
@@ -51,6 +54,8 @@ export class AuthComponent {
         this.isLoading = false;
       },
     });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
 
     form.reset();
   }
