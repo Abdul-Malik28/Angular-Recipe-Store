@@ -47,7 +47,7 @@ export class AuthComponent {
       next: (resData) => {
         console.log(resData);
         this.isLoading = false;
-        this.router.navigate([ '/recipes']);
+        this.router.navigate(['/recipes']);
       },
       error: (errorMessage: Error) => {
         console.log(errorMessage);
@@ -59,5 +59,9 @@ export class AuthComponent {
     this.destroyRef.onDestroy(() => sub.unsubscribe());
 
     form.reset();
+  }
+
+  onHandleError() {
+    this.error = null;
   }
 }

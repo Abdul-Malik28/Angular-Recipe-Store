@@ -4,7 +4,7 @@
         <!-- <div class="alert alert-danger">
             <p>{{ error }}</p>
         </div> -->
-        <app-alert [message]="error"/>
+        <app-alert [message]="error" (close)="onHandleError()"/>
         }
         @if (!isLoading) {
         <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
