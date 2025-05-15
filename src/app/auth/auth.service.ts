@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { DestroyRef, inject, Injectable } from '@angular/core';
-import { catchError, Subject, tap, throwError } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
 
 import { User } from './user.model';
 
@@ -19,9 +19,8 @@ export interface AuthResponseData {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private destroyRef = inject(DestroyRef);
 
-  user$ = new Subject<User>();
+  user$ = new BehaviorSubject<User | null>(null);
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
