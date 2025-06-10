@@ -1,8 +1,11 @@
 import { createReducer, on } from "@ngrx/store";
 
 import { ADD_INGREDIENT } from './shopping-list.actions';
+import { Ingredient } from "../../shared/ingredient.model";
 
-const initialState = {
+const initialState: {
+    ingredients: Ingredient[];
+} = {
     ingredients: [
         {
             id: 'i1',

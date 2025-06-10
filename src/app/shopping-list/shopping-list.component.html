@@ -4,9 +4,9 @@
         <hr />
         <ul class="list-group">
             @if (ingredients) {
-            @for (ingredient of ingredients; track $index) {
+            @for (ingredient of ((ingredients | async)?.ingredients); track $index){
             <a class="list-group-item" (click)="onEditItem($index)" style="cursor: pointer;">
-                {{ ingredient.name }} ({{ ingredient.amount }})
+                {{ ingredient?.name }} ({{ ingredient?.amount }})
             </a>
             }
             }
