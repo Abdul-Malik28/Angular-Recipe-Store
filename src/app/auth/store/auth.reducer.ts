@@ -4,11 +4,15 @@ import { User } from "../user.model";
 import * as AuthActions from "./auth.actions";
 
 export type State = {
-    user: User | null
+    user: User | null,
+    authError: string;
+    loading: boolean
 };
 
 const initialState: State = {
-    user: null
+    user: null,
+    authError: '',
+    loading: false
 };
 
 export const authReducer = createReducer(
@@ -17,13 +21,30 @@ export const authReducer = createReducer(
         const user = new User(action.payload.email, action.payload.userId, action.payload.token, action.payload.expirationDate);
         return {
             ...state,
-            user
+            authError: '',
+            user,
+            loading: false
         };
     }),
     on(AuthActions.logout, (state, action) => {
         return {
             ...state,
             user: null
+        }
+    }),
+    on(AuthActions.loginStart, (state, action) => {
+        return {
+            ...state,
+            authError: '',
+            loading:true
+        }
+    }),
+    on(AuthActions.loginFail, (state, action) => {
+        return {
+            ...state,
+            user:null,
+            authError: action.payload,
+            loading:false
         }
     }),
 );
