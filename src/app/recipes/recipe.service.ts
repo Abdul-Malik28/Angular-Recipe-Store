@@ -1,10 +1,12 @@
 import { computed, inject, Injectable, Output, signal } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { DataStorageService } from '../shared/data-storage.service';
+import  *  as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +67,8 @@ export class RecipeService {
   //   return this.recipes().slice();
   // }
 
+  private store = inject(Store<{ shoppingList: { ingredients: Ingredient[] } }>);
+
   getRecipes = this.recipes.asReadonly();
 
   setRecipes(recipes: Recipe[]) {
@@ -87,7 +91,8 @@ export class RecipeService {
     if (!ingredients) {
       return;
     }
-    this.slService.addIngredients(ingredients);
+    // this.slService.addIngredients(ingredients);
+    this.store.dispatch(ShoppingListActions.ADD_INGREDIENTS({payload: ingredients}));
   }
 
   addRecipe(recipe: Omit<Recipe, 'id'>) {
