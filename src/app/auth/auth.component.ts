@@ -1,11 +1,8 @@
 import { Component, ComponentFactoryResolver, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LoadingSpinnerComponent } from "../shared/loading-spinner/loading-spinner.component";
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { AuthResponseData, AuthService } from './auth.service';
 import { AlertComponent } from "../shared/alert/alert.component";
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import * as fromApp from '../store/app.reducer';
@@ -24,9 +21,9 @@ export class AuthComponent implements OnInit {
   error: string | null = null;
   @ViewChild(PlaceholderDirective) alertHost!: PlaceholderDirective;
 
-  private authService = inject(AuthService);
+  // private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
-  private router = inject(Router);
+  // private router = inject(Router);
   private store = inject(Store<fromApp.AppState>);
   private componentFactoryResolver = inject(ComponentFactoryResolver);
 
