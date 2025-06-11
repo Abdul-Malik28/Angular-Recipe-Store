@@ -8,6 +8,7 @@ import * as AuthActions from './auth.actions';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { User } from '../user.model';
+import { AuthService } from '../auth.service';
 
 export interface AuthResponseData {
     kind: string;
@@ -59,6 +60,7 @@ export class AuthEffects {
     private actions$ = inject(Actions);
     private http = inject(HttpClient);
     private router = inject(Router);
+    private authService = inject(AuthService);
 
     authSignup = createEffect(() => this.actions$.pipe(
         ofType(AuthActions.signupStart),
@@ -71,6 +73,9 @@ export class AuthEffects {
                     returnSecureToken: true
                 }
             ).pipe(
+                tap(resData => {
+                    this.authService.setLogoutTimer(+resData.expiresIn * 1000);
+                }),
                 map(resData => {
                     return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken);
                 }),
@@ -92,6 +97,9 @@ export class AuthEffects {
                     returnSecureToken: true
                 }
             ).pipe(
+                tap(resData => {
+                    this.authService.setLogoutTimer(+resData.expiresIn * 1000);
+                }),
                 map(resData => {
                     return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken);
                 }),
@@ -103,7 +111,7 @@ export class AuthEffects {
     ));
 
     authRedirect = createEffect(() => this.actions$.pipe(
-        ofType(AuthActions.authenticateSuccess, AuthActions.logout),
+        ofType(AuthActions.authenticateSuccess),
         tap(() => {
             this.router.navigate(['/']);
         })
@@ -126,10 +134,11 @@ export class AuthEffects {
                 } = JSON.parse(userData);
                 const loadeduser = new User(actualUser.email, actualUser.id, actualUser._token, new Date(actualUser._tokenExpirationDate));
 
-                if (loadeduser.token) {
-                   return AuthActions.authenticateSuccess({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } });
-                    // const expirationDuration = new Date(actualUser._tokenExpirationDate).getTime() - new Date().getTime();
-                    // this.autoLogout(expirationDuration);
+                if (loadeduser.token) {  
+                    const expirationDuration = new Date(actualUser._tokenExpirationDate).getTime() - new Date().getTime();
+
+                    this.authService.setLogoutTimer(expirationDuration);                
+                   return AuthActions.authenticateSuccess({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } });                    
                 }
             }
             return {type: 'DUMMY'};
@@ -139,7 +148,9 @@ export class AuthEffects {
     authLogout = createEffect(() => this.actions$.pipe(
         ofType(AuthActions.logout),
         tap(() => {
+            this.authService.clearLogoutTimer();
             localStorage.removeItem('userData');
+            this.router.navigate(['/auth']);
         })
     ), { dispatch: false });
 }

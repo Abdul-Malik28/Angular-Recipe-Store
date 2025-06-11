@@ -1,11 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, tap, throwError } from 'rxjs';
-import { Router } from '@angular/router';
+import { throwError } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { User } from './user.model';
-import { environment } from '../../environments/environment';
 import * as fromApp from '../store/app.reducer';
 import * as AuthActions from './store/auth.actions';
 
@@ -23,11 +21,11 @@ export interface AuthResponseData {
   providedIn: 'root'
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private router = inject(Router);
+    // private http = inject(HttpClient);
+    // private router = inject(Router);
   private store = inject(Store<fromApp.AppState>);
 
-  // user$ = new BehaviorSubject<User | null>(null);
+  //// user$ = new BehaviorSubject<User | null>(null);
 
   private tokenExpirationTimer: any;
 
@@ -59,85 +57,93 @@ export class AuthService {
   //   );
   // }
 
-  autoLogin() {
-    const userData: string | null = localStorage.getItem('userData');
-    if (!userData || userData === null) {
-      return;
-    }
+  // autoLogin() {
+  //   const userData: string | null = localStorage.getItem('userData');
+  //   if (!userData || userData === null) {
+  //     return;
+  //   }
 
-    if (userData !== null) {
-      const actualUser: {
-        email: string;
-        id: string;
-        _token: string;
-        _tokenExpirationDate: string;
-      } = JSON.parse(userData);
-      const loadeduser = new User(actualUser.email, actualUser.id, actualUser._token, new Date(actualUser._tokenExpirationDate));
+  //   if (userData !== null) {
+  //     const actualUser: {
+  //       email: string;
+  //       id: string;
+  //       _token: string;
+  //       _tokenExpirationDate: string;
+  //     } = JSON.parse(userData);
+  //     const loadeduser = new User(actualUser.email, actualUser.id, actualUser._token, new Date(actualUser._tokenExpirationDate));
 
-      if (loadeduser.token) {
-        // this.user$.next(loadeduser);
-        this.store.dispatch(AuthActions.authenticateSuccess({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } }));
-        const expirationDuration = new Date(actualUser._tokenExpirationDate).getTime() - new Date().getTime();
-        this.autoLogout(expirationDuration);
-      }
-    }
+  //     if (loadeduser.token) {
+  //       // this.user$.next(loadeduser);
+  //       this.store.dispatch(AuthActions.authenticateSuccess({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } }));
+  //       const expirationDuration = new Date(actualUser._tokenExpirationDate).getTime() - new Date().getTime();
+  //       this.autoLogout(expirationDuration);
+  //     }
+  //   }
+  // }
+
+  // logout() {
+  //   // this.user$.next(null);
+  //   this.store.dispatch(AuthActions.logout());
+  //   // this.router.navigate(['/auth']);
+  //   localStorage.removeItem('userData');
+  //   if (this.tokenExpirationTimer) {
+  //     clearTimeout(this.tokenExpirationTimer);
+  //   }
+  //   this.tokenExpirationTimer = null;
+  // }
+
+  // autoLogout(expirationDuration: number) {
+  setLogoutTimer(expirationDuration: number) {
+    console.log(expirationDuration);
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.store.dispatch(AuthActions.logout());
+    }, expirationDuration);
   }
 
-  logout() {
-    // this.user$.next(null);
-    this.store.dispatch(AuthActions.logout());
-    // this.router.navigate(['/auth']);
-    localStorage.removeItem('userData');
-    if (this.tokenExpirationTimer) {
+  clearLogoutTimer(){
+    if(this.tokenExpirationTimer){
       clearTimeout(this.tokenExpirationTimer);
     }
     this.tokenExpirationTimer = null;
   }
 
-  autoLogout(expirationDuration: number) {
-    console.log(expirationDuration);
-    this.tokenExpirationTimer = setTimeout(() => {
-      this.logout();
-    }, expirationDuration);
-  }
+  // private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
+  //   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+  //   const user = new User(email, userId, token, expirationDate);
+  //   // this.user$.next(user);
+  //   this.store.dispatch(AuthActions.authenticateSuccess({payload: {email, userId, token, expirationDate}}));
+  //   this.autoLogout(expiresIn * 1000);
 
-  private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
-    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(email, userId, token, expirationDate);
-    // this.user$.next(user);
-    this.store.dispatch(AuthActions.authenticateSuccess({payload: {email, userId, token, expirationDate}}));
-    this.autoLogout(expiresIn * 1000);
+  //   localStorage.setItem('userData', JSON.stringify(user));
+  // }
 
-    localStorage.setItem('userData', JSON.stringify(user));
-  }
+  // private handleError(errorRes: HttpErrorResponse) {
+  //   let errorMsg = 'An unknown error occurred!';
+  //   console.log(errorRes);
 
-  private handleError(errorRes: HttpErrorResponse) {
-    let errorMsg = 'An unknown error occurred!';
-    console.log(errorRes);
+  //   const firebaseErrorMessage = errorRes.error?.error?.message || errorRes.error?.message;
 
-    const firebaseErrorMessage = errorRes.error?.error?.message || errorRes.error?.message;
+  //   if (!firebaseErrorMessage) {
+  //     return throwError(() => new Error(errorMsg));
+  //   }
 
-    if (!firebaseErrorMessage) {
-      return throwError(() => new Error(errorMsg));
-    }
+  //   switch (firebaseErrorMessage) {
+  //     case 'EMAIL_EXISTS':
+  //       errorMsg = 'This email already exists.';
+  //       break;
+  //     case 'EMAIL_NOT_FOUND':
+  //       errorMsg = 'This email does not exist.';
+  //       break;
+  //     case 'INVALID_PASSWORD':
+  //       errorMsg = 'This password is incorrect.';
+  //       break;
+  //     case 'INVALID_LOGIN_CREDENTIALS':
+  //       errorMsg = 'Invalid email or password.';
+  //       break;
+  //   }
 
-    switch (firebaseErrorMessage) {
-      case 'EMAIL_EXISTS':
-        errorMsg = 'This email already exists.';
-        break;
-      case 'EMAIL_NOT_FOUND':
-        errorMsg = 'This email does not exist.';
-        break;
-      case 'INVALID_PASSWORD':
-        errorMsg = 'This password is incorrect.';
-        break;
-      case 'INVALID_LOGIN_CREDENTIALS':
-        errorMsg = 'Invalid email or password.';
-        break;
-    }
-
-    return throwError(() => new Error(errorMsg));
-  }
+  //   return throwError(() => new Error(errorMsg));
+  // }
 
 
 
