@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import { Store } from '@ngrx/store';
-import { ADD_INGREDIENT, UPDATE_INGREDIENT, DELETE_INGREDIENTS } from '../store/shopping-list.actions';
+import * as ShoppingListActions from '../store/shopping-list.actions';
 import * as fromShoppingList from '../store/shopping-list.reducer';
 
 
@@ -22,23 +22,28 @@ export class ShopingEditComponent implements OnInit {
   private store = inject(Store<fromShoppingList.AppState>);
 
   editMode = false;
-  editedItemIndex!: number;
   editedItem?: Ingredient;
 
   ngOnInit() {
-    const subs = this.slServie.startedEditing$.subscribe({
-      next: (index) => {
-        this.editedItemIndex = index;
-        this.editMode = true;
-        this.editedItem = this.slServie.getIngredient(index);
-        this.slForm.setValue({
-          name: this.editedItem.name,
-          amount: this.editedItem.amount,
-        })
+    const subs = this.store.select('shoppingList').subscribe({
+      next: (stateData: fromShoppingList.State) => {
+        if (stateData.editedIngredientIndex > -1) {
+          this.editMode = true;
+          this.editedItem = stateData.editedIngredient;
+          this.slForm.setValue({
+            name: this.editedItem?.name,
+            amount: this.editedItem?.amount,
+          })
+        } else {
+          this.editMode = false;
+        }
       }
     });
 
-    this.destroyRef.onDestroy(() => subs.unsubscribe());
+    this.destroyRef.onDestroy(() => {
+      subs.unsubscribe();
+      this.store.dispatch(ShoppingListActions.stopEdit());
+    });
   }
 
   onSubmit(form: NgForm) {
@@ -51,10 +56,10 @@ export class ShopingEditComponent implements OnInit {
 
     if (this.editMode) {
       // this.slServie.updateIngredient(this.editedItemIndex, newIngredient);
-      this.store.dispatch(UPDATE_INGREDIENT({payload: { index: this.editedItemIndex, ingredient: newIngredient }}));
+      this.store.dispatch(ShoppingListActions.updateIngredient({ ingredient: newIngredient }));
     } else {
       // this.slServie.addIngredient(newIngredient);
-      this.store.dispatch(ADD_INGREDIENT({ payload: newIngredient }));
+      this.store.dispatch(ShoppingListActions.addIngredient({ payload: newIngredient }));
     }
     this.editMode = false;
     form.reset();
@@ -63,11 +68,12 @@ export class ShopingEditComponent implements OnInit {
   onClear() {
     this.slForm.reset();
     this.editMode = false;
+    this.store.dispatch(ShoppingListActions.stopEdit());
   }
 
   onDelete() {
     // this.slServie.deleteIngredient(this.editedItemIndex);
-    this.store.dispatch(DELETE_INGREDIENTS({payload: this.editedItemIndex}));
+    this.store.dispatch(ShoppingListActions.deleteIngredient());
     this.onClear();
   }
 }

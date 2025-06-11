@@ -93,7 +93,7 @@ export class RecipeService {
       return;
     }
     // this.slService.addIngredients(ingredients);
-    this.store.dispatch(ShoppingListActions.ADD_INGREDIENTS({payload: ingredients}));
+    this.store.dispatch(ShoppingListActions.addIngredients({payload: ingredients}));
   }
 
   addRecipe(recipe: Omit<Recipe, 'id'>) {

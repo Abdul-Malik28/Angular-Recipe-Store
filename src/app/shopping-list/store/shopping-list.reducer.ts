@@ -5,7 +5,7 @@ import { Ingredient } from "../../shared/ingredient.model";
 
 export type State = {
     ingredients: Ingredient[];
-    editedIngredient: Ingredient | null;
+    editedIngredient?: Ingredient;
     editedIngredientIndex: number;
 }
 
@@ -26,44 +26,62 @@ const initialState: State = {
             amount: 10
         },
     ],
-    editedIngredient: null,
+    editedIngredient: undefined,
     editedIngredientIndex: -1,
 };
 
 export const shoppingListReducer = createReducer(
     initialState,
-    on(ShoppingListActions.ADD_INGREDIENT, (state, action) => {
+    on(ShoppingListActions.addIngredient, (state, action) => {
         return {
             ...state,
             ingredients: [...state.ingredients, action.payload]
         };
     }),
-    on(ShoppingListActions.ADD_INGREDIENTS, (state, action) => {
+    on(ShoppingListActions.addIngredients, (state, action) => {
         return {
             ...state,
             ingredients: [...state.ingredients, ...action.payload],
         };
     }),
-    on(ShoppingListActions.UPDATE_INGREDIENT, (state, action) => {
-        const ingredient = state.ingredients[action.payload.index];
+    on(ShoppingListActions.updateIngredient, (state, action) => {
+        const ingredient = state.ingredients[state.editedIngredientIndex];
         const updatedIngredient = {
             ...ingredient,
-            ...action.payload.ingredient
+            ...action.ingredient
         };
         const updatedIngredients = [...state.ingredients];
-        updatedIngredients[action.payload.index] = updatedIngredient;
+        updatedIngredients[state.editedIngredientIndex] = updatedIngredient;
 
         return {
             ...state,
-            ingredients: updatedIngredients
+            ingredients: updatedIngredients,
+            editedIngredientIndex: -1,
+            editedIngredient: undefined
         };
     }),
-    on(ShoppingListActions.DELETE_INGREDIENTS, (state, action) => {
+    on(ShoppingListActions.deleteIngredient, (state, action) => {
         return {
             ...state,
             ingredients: state.ingredients.filter((ig, igIndex) => {
-                return igIndex !== action.payload;
-            })
+                return igIndex !== state.editedIngredientIndex;
+            }),
+            editedIngredientIndex: -1,
+            editedIngredient: undefined
+        };
+    }),
+    on(ShoppingListActions.startEdit, (state, action) => {
+        return {
+            ...state,
+            editedIngredientIndex: action.payload,
+            editedIngredient: { ...state.ingredients[action.payload] }
+        };
+    }),
+    on(ShoppingListActions.stopEdit, (state, action) => {
+        return {
+            ...state,
+            editedIngredient: undefined,
+            editedIngredientIndex: -1
         };
     }),
 );
