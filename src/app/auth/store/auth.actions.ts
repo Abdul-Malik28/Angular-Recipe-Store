@@ -7,7 +7,7 @@ export const loginStart = createAction(
 
 export const authenticateSuccess = createAction(
     '[Auth] Authenticate Success',
-    props<{ payload: { email: string, userId: string, token: string, expirationDate: Date } }>()
+    props<{ payload: { email: string, userId: string, token: string, expirationDate: Date, redirect: boolean } }>()
 );
 
 export const authenticateFail = createAction(
