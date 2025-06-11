@@ -1,7 +1,6 @@
 import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
-import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import { Store } from '@ngrx/store';
 import * as ShoppingListActions from '../store/shopping-list.actions';
@@ -17,7 +16,6 @@ import * as fromShoppingList from '../store/shopping-list.reducer';
 export class ShopingEditComponent implements OnInit {
   @ViewChild('f') slForm!: NgForm;
 
-  private slServie = inject(ShoppingListService);
   private destroyRef = inject(DestroyRef);
   private store = inject(Store<fromShoppingList.AppState>);
 

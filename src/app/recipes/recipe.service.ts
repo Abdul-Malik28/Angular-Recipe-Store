@@ -4,8 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list/shopping-list.service';
-import { DataStorageService } from '../shared/data-storage.service';
+// import { DataStorageService } from '../shared/data-storage.service';
 import  *  as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
 import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
 
@@ -19,7 +18,6 @@ export class RecipeService {
   recipeAdded$ = new Subject<void>();
   recipeUpdated$ = new Subject<void>();
 
-  private slService = inject(ShoppingListService);
   private lastId = 0;
 
   // private recipes: Recipe[] = [
