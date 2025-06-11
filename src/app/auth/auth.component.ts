@@ -21,9 +21,7 @@ export class AuthComponent implements OnInit {
   error: string | null = null;
   @ViewChild(PlaceholderDirective) alertHost!: PlaceholderDirective;
 
-  // private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
-  // private router = inject(Router);
   private store = inject(Store<fromApp.AppState>);
   private componentFactoryResolver = inject(ComponentFactoryResolver);
 
@@ -51,34 +49,12 @@ export class AuthComponent implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
 
-    // let authObs: Observable<AuthResponseData>;
-
-    // this.isLoading = true;
 
     if (this.isLoginMode) {
-      // authObs = this.authService.login(email, password);
       this.store.dispatch(AuthActions.loginStart({payload: {email, password}}));
-    } else {
-      // authObs = this.authService.signup(email, password);
+    } else {    
       this.store.dispatch(AuthActions.signupStart({payload: {email, password}}));
     }
-
-    // const sub = authObs.subscribe({
-    //   next: (resData) => {
-    //     console.log(resData);
-    //     this.isLoading = false;
-    //     this.router.navigate(['/recipes']);
-    //   },
-    //   error: (errorMessage: Error) => {
-    //     console.log(errorMessage);
-    //     this.error = errorMessage.message;
-    //     this.showErrorAlert(errorMessage.message);
-    //     this.isLoading = false;
-    //   },
-    // });
-
-    // this.destroyRef.onDestroy(() => sub.unsubscribe());
-
     form.reset();
   }
 
