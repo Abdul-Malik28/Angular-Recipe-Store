@@ -9,6 +9,7 @@ import * as fromApp from './store/app.reducer';
 import { provideEffects } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideRouterStore } from '@ngrx/router-store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideStore(fromApp.appReducers),
     provideEffects([AuthEffects]),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideRouterStore()
 ]
 };
