@@ -9,10 +9,6 @@ export type State = {
     editedIngredientIndex: number;
 }
 
-export type AppState = {
-    shoppingList: State
-}
-
 const initialState: State = {
     ingredients: [
         {

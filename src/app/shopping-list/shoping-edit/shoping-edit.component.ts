@@ -1,10 +1,11 @@
 import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
 
 import { Ingredient } from '../../shared/ingredient.model';
-import { Store } from '@ngrx/store';
 import * as ShoppingListActions from '../store/shopping-list.actions';
-import * as fromShoppingList from '../store/shopping-list.reducer';
+import * as fromApp from '../../store/app.reducer';
+import { State } from '../store/shopping-list.reducer';
 
 
 @Component({
@@ -17,14 +18,14 @@ export class ShopingEditComponent implements OnInit {
   @ViewChild('f') slForm!: NgForm;
 
   private destroyRef = inject(DestroyRef);
-  private store = inject(Store<fromShoppingList.AppState>);
+  private store = inject(Store<fromApp.AppState>);
 
   editMode = false;
   editedItem?: Ingredient;
 
   ngOnInit() {
     const subs = this.store.select('shoppingList').subscribe({
-      next: (stateData: fromShoppingList.State) => {
+      next: (stateData: State) => {
         if (stateData.editedIngredientIndex > -1) {
           this.editMode = true;
           this.editedItem = stateData.editedIngredient;

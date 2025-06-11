@@ -6,7 +6,7 @@ import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 // import { DataStorageService } from '../shared/data-storage.service';
 import  *  as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
-import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
+import * as fromApp from '../store/app.reducer';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +66,7 @@ export class RecipeService {
   //   return this.recipes().slice();
   // }
 
-  private store = inject(Store<fromShoppingList.AppState>);
+  private store = inject(Store<fromApp.AppState>);
 
   getRecipes = this.recipes.asReadonly();
 

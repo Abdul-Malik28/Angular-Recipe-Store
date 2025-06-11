@@ -5,7 +5,7 @@ import { AsyncPipe } from '@angular/common';
 
 import { ShopingEditComponent } from "./shoping-edit/shoping-edit.component";
 import { Ingredient } from '../shared/ingredient.model';
-import * as fromShoppingList from './store/shopping-list.reducer';
+import * as fromApp from '../store/app.reducer';
 import * as ShoppingListActions from './store/shopping-list.actions';
 
 @Component({
@@ -17,7 +17,7 @@ import * as ShoppingListActions from './store/shopping-list.actions';
 export class ShoppingListComponent implements OnInit {
   ingredients: Observable<{ ingredients: Ingredient[] }>;
   private destroyRef = inject(DestroyRef);
-  private store = inject(Store<fromShoppingList.AppState>);
+  private store = inject(Store<fromApp.AppState>);
 
   constructor() {
     this.ingredients = this.store.select('shoppingList');
