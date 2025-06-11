@@ -3,6 +3,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 
 import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
+import { Store } from '@ngrx/store';
+import { ADD_INGREDIENT } from '../store/shopping-list.actions';
 
 @Component({
   selector: 'app-shoping-edit',
@@ -15,6 +17,7 @@ export class ShopingEditComponent implements OnInit {
 
   private slServie = inject(ShoppingListService);
   private destroyRef = inject(DestroyRef);
+  private store = inject(Store<{ shoppingList: { ingredients: Ingredient[] } }>);
 
   editMode = false;
   editedItemIndex!: number;
@@ -47,7 +50,8 @@ export class ShopingEditComponent implements OnInit {
     if (this.editMode) {
       this.slServie.updateIngredient(this.editedItemIndex, newIngredient);
     } else {
-      this.slServie.addIngredient(newIngredient);
+      // this.slServie.addIngredient(newIngredient);
+      this.store.dispatch(ADD_INGREDIENT({payload: newIngredient}));
     }
     this.editMode = false;
     form.reset();
@@ -58,7 +62,7 @@ export class ShopingEditComponent implements OnInit {
     this.editMode = false;
   }
 
-  onDelete(){
+  onDelete() {
     this.slServie.deleteIngredient(this.editedItemIndex);
     this.onClear();
   }
