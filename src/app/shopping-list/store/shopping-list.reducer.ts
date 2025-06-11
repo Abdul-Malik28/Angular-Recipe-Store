@@ -33,5 +33,27 @@ export const shoppingListReducer = createReducer(
             ...state,
             ingredients: [...state.ingredients, ...action.payload],
         };
-    })
+    }),
+    on(ShoppingListActions.UPDATE_INGREDIENT, (state, action) => {
+        const ingredient = state.ingredients[action.payload.index];
+        const updatedIngredient = {
+            ...ingredient,
+            ...action.payload.ingredient
+        };
+        const updatedIngredients = [...state.ingredients];
+        updatedIngredients[action.payload.index] = updatedIngredient;
+
+        return {
+            ...state,
+            ingredients: updatedIngredients
+        };
+    }),
+    on(ShoppingListActions.DELETE_INGREDIENTS, (state, action) => {
+        return {
+            ...state,
+            ingredients: state.ingredients.filter((ig, igIndex) => {
+                return igIndex !== action.payload;
+            })
+        };
+    }),
 );

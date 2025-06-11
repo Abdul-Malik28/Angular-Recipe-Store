@@ -11,3 +11,13 @@ export const ADD_INGREDIENTS = createAction(
     '[ShoppingList] ADD_INGREDIENTS',
     props<{payload: Ingredient[]}>()
 );
+
+export const UPDATE_INGREDIENT = createAction(
+    '[ShoppingList] UPDATE_INGREDIENTS',
+    props<{payload: {index: number, ingredient: Ingredient}}>()
+);
+
+export const DELETE_INGREDIENTS = createAction(
+    '[ShoppingList] DELETE_INGREDIENTS',
+    props<{payload: number}>()
+);

@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import { Store } from '@ngrx/store';
-import { ADD_INGREDIENT } from '../store/shopping-list.actions';
+import { ADD_INGREDIENT, UPDATE_INGREDIENT, DELETE_INGREDIENTS } from '../store/shopping-list.actions';
 
 @Component({
   selector: 'app-shoping-edit',
@@ -48,10 +48,11 @@ export class ShopingEditComponent implements OnInit {
     }
 
     if (this.editMode) {
-      this.slServie.updateIngredient(this.editedItemIndex, newIngredient);
+      // this.slServie.updateIngredient(this.editedItemIndex, newIngredient);
+      this.store.dispatch(UPDATE_INGREDIENT({payload: { index: this.editedItemIndex, ingredient: newIngredient }}));
     } else {
       // this.slServie.addIngredient(newIngredient);
-      this.store.dispatch(ADD_INGREDIENT({payload: newIngredient}));
+      this.store.dispatch(ADD_INGREDIENT({ payload: newIngredient }));
     }
     this.editMode = false;
     form.reset();
@@ -63,7 +64,8 @@ export class ShopingEditComponent implements OnInit {
   }
 
   onDelete() {
-    this.slServie.deleteIngredient(this.editedItemIndex);
+    // this.slServie.deleteIngredient(this.editedItemIndex);
+    this.store.dispatch(DELETE_INGREDIENTS({payload: this.editedItemIndex}));
     this.onClear();
   }
 }
