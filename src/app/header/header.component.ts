@@ -1,9 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 
 import { DropdownDirective } from '../shared/dropdown.directive';
 import { DataStorageService } from '../shared/data-storage.service';
 import { AuthService } from '../auth/auth.service';
+import * as fromApp from '../store/app.reducer';
 
 @Component({
   selector: 'app-header',
@@ -19,12 +22,16 @@ export class HeaderComponent implements OnInit {
   // }
   isAuthenticated = false;
 
+  private store = inject(Store<fromApp.AppState>);
   private authService = inject(AuthService);
   private dsService = inject(DataStorageService);
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    const sub = this.authService.user$.subscribe({
+    // const sub = this.authService.user$.subscribe({
+    const sub = this.store.select('auth').pipe(
+      map(authState => authState.user)
+    ).subscribe({
       next: (user) => {
         // this.isAuthenticated = !user ? false : true
         this.isAuthenticated = !!user;

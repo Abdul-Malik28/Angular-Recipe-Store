@@ -27,7 +27,7 @@ export class AuthService {
   private router = inject(Router);
   private store = inject(Store<fromApp.AppState>);
 
-  user$ = new BehaviorSubject<User | null>(null);
+  // user$ = new BehaviorSubject<User | null>(null);
 
   private tokenExpirationTimer: any;
 
