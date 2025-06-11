@@ -18,11 +18,65 @@ export interface AuthResponseData {
     registered?: boolean;
 }
 
+const handleAuthentication = (expiresIn: number, email: string, userId: string, token: string) => {
+    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+    return AuthActions.authenticateSuccess({ payload: { email, userId, token, expirationDate } });
+};
+
+const handleError = (errorRes: any) => {
+    let errorMsg = 'An unknown error occurred!';
+    console.log(errorRes);
+
+    const firebaseErrorMessage = errorRes.error?.error?.message || errorRes.error?.message;
+
+    if (!firebaseErrorMessage) {
+        return of(AuthActions.authenticateFail({ payload: errorMsg }))
+    }
+
+    switch (firebaseErrorMessage) {
+        case 'EMAIL_EXISTS':
+            errorMsg = 'This email already exists.';
+            break;
+        case 'EMAIL_NOT_FOUND':
+            errorMsg = 'This email does not exist.';
+            break;
+        case 'INVALID_PASSWORD':
+            errorMsg = 'This password is incorrect.';
+            break;
+        case 'INVALID_LOGIN_CREDENTIALS':
+            errorMsg = 'Invalid email or password.';
+            break;
+    }
+
+    return of(AuthActions.authenticateFail({ payload: errorMsg }));
+};
+
 @Injectable()
 export class AuthEffects {
     private actions$ = inject(Actions);
     private http = inject(HttpClient);
     private router = inject(Router);
+
+    authSignup = createEffect(() => this.actions$.pipe(
+        ofType(AuthActions.signupStart),
+        switchMap((signupAction) => {
+            return this.http.post<AuthResponseData>(
+                `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseApiKey}`,
+                {
+                    email: signupAction.payload.email,
+                    password: signupAction.payload.password,
+                    returnSecureToken: true
+                }
+            ).pipe(
+                map(resData => {
+                    return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken);
+                }),
+                catchError(errorRes => {
+                    return handleError(errorRes);
+                })
+            )
+        })
+    ));
 
     authLogin = createEffect(() => this.actions$.pipe(
         ofType(AuthActions.loginStart),
@@ -36,44 +90,19 @@ export class AuthEffects {
                 }
             ).pipe(
                 map(resData => {
-                    const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);
-                    return AuthActions.login({ payload: {email: resData.email, userId: resData.localId, token: resData.idToken, expirationDate}});
+                    return handleAuthentication(+resData.expiresIn, resData.email, resData.localId, resData.idToken);
                 }),
                 catchError(errorRes => {
-                    let errorMsg = 'An unknown error occurred!';
-                        console.log(errorRes);
-                    
-                        const firebaseErrorMessage = errorRes.error?.error?.message || errorRes.error?.message;
-                    
-                        if (!firebaseErrorMessage) {
-                          return of(AuthActions.loginFail({payload : errorMsg}))
-                        }
-                    
-                        switch (firebaseErrorMessage) {
-                          case 'EMAIL_EXISTS':
-                            errorMsg = 'This email already exists.';
-                            break;
-                          case 'EMAIL_NOT_FOUND':
-                            errorMsg = 'This email does not exist.';
-                            break;
-                          case 'INVALID_PASSWORD':
-                            errorMsg = 'This password is incorrect.';
-                            break;
-                          case 'INVALID_LOGIN_CREDENTIALS':
-                            errorMsg = 'Invalid email or password.';
-                            break;
-                        }
-
-                    return of(AuthActions.loginFail({payload : errorMsg}));
+                    return handleError(errorRes);
                 })
             )
         })
     ));
 
-    authSuccess = createEffect(() => this.actions$.pipe(
-        ofType(AuthActions.login),
+    authRedirect = createEffect(() => this.actions$.pipe(
+        ofType(AuthActions.authenticateSuccess, AuthActions.logout),
         tap(() => {
             this.router.navigate(['/']);
         })
-    ), {dispatch: false});
+    ), { dispatch: false });
 }

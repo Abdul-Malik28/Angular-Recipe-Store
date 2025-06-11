@@ -31,33 +31,33 @@ export class AuthService {
 
   private tokenExpirationTimer: any;
 
-  signup(email: string, password: string) {
-    return this.http.post<AuthResponseData>(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseApiKey}`,
-      { email, password, returnSecureToken: true }
-    ).pipe(
-      catchError(this.handleError),
-      tap({
-        next: (resData) => {
-          this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn)
-        }
-      }),
-    );
-  }
+  // signup(email: string, password: string) {
+  //   return this.http.post<AuthResponseData>(
+  //     `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseApiKey}`,
+  //     { email, password, returnSecureToken: true }
+  //   ).pipe(
+  //     catchError(this.handleError),
+  //     tap({
+  //       next: (resData) => {
+  //         this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn)
+  //       }
+  //     }),
+  //   );
+  // }
 
-  login(email: string, password: string) {
-    return this.http.post<AuthResponseData>(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseApiKey}`,
-      { email, password, returnSecureToken: true }
-    ).pipe(
-      catchError(this.handleError),
-      tap({
-        next: (resData) => {
-          this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn)
-        }
-      }),
-    );
-  }
+  // login(email: string, password: string) {
+  //   return this.http.post<AuthResponseData>(
+  //     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseApiKey}`,
+  //     { email, password, returnSecureToken: true }
+  //   ).pipe(
+  //     catchError(this.handleError),
+  //     tap({
+  //       next: (resData) => {
+  //         this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn)
+  //       }
+  //     }),
+  //   );
+  // }
 
   autoLogin() {
     const userData: string | null = localStorage.getItem('userData');
@@ -76,7 +76,7 @@ export class AuthService {
 
       if (loadeduser.token) {
         // this.user$.next(loadeduser);
-        this.store.dispatch(AuthActions.login({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } }));
+        this.store.dispatch(AuthActions.authenticateSuccess({ payload: { email: loadeduser.email, userId: loadeduser.id, token: loadeduser.token, expirationDate: new Date(actualUser._tokenExpirationDate) } }));
         const expirationDuration = new Date(actualUser._tokenExpirationDate).getTime() - new Date().getTime();
         this.autoLogout(expirationDuration);
       }
@@ -86,7 +86,7 @@ export class AuthService {
   logout() {
     // this.user$.next(null);
     this.store.dispatch(AuthActions.logout());
-    this.router.navigate(['/auth']);
+    // this.router.navigate(['/auth']);
     localStorage.removeItem('userData');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
@@ -105,7 +105,7 @@ export class AuthService {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const user = new User(email, userId, token, expirationDate);
     // this.user$.next(user);
-    this.store.dispatch(AuthActions.login({payload: {email, userId, token, expirationDate}}));
+    this.store.dispatch(AuthActions.authenticateSuccess({payload: {email, userId, token, expirationDate}}));
     this.autoLogout(expiresIn * 1000);
 
     localStorage.setItem('userData', JSON.stringify(user));

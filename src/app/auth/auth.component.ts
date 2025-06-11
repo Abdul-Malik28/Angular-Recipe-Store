@@ -31,7 +31,7 @@ export class AuthComponent implements OnInit {
   private componentFactoryResolver = inject(ComponentFactoryResolver);
 
   ngOnInit(){
-    this.store.select('auth').subscribe({
+    const storeSub = this.store.select('auth').subscribe({
       next: (authState: State) => {
         this.isLoading = authState.loading;
         this.error = authState.authError;
@@ -40,6 +40,7 @@ export class AuthComponent implements OnInit {
         }
       }
     });
+    this.destroyRef.onDestroy(() => storeSub.unsubscribe());
   }
 
   onSwitchMode() {
@@ -53,15 +54,16 @@ export class AuthComponent implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
 
-    let authObs: Observable<AuthResponseData>;
+    // let authObs: Observable<AuthResponseData>;
 
-    this.isLoading = true;
+    // this.isLoading = true;
 
     if (this.isLoginMode) {
       // authObs = this.authService.login(email, password);
       this.store.dispatch(AuthActions.loginStart({payload: {email, password}}));
     } else {
-      authObs = this.authService.signup(email, password);
+      // authObs = this.authService.signup(email, password);
+      this.store.dispatch(AuthActions.signupStart({payload: {email, password}}));
     }
 
     // const sub = authObs.subscribe({
@@ -84,7 +86,7 @@ export class AuthComponent implements OnInit {
   }
 
   onHandleError() {
-    this.error = null;
+    this.store.dispatch(AuthActions.clearError());
   }
 
   private showErrorAlert(message: string) {
