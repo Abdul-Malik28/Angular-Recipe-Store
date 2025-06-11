@@ -3,9 +3,17 @@ import { createReducer, on } from "@ngrx/store";
 import * as ShoppingListActions from './shopping-list.actions';
 import { Ingredient } from "../../shared/ingredient.model";
 
-const initialState: {
+export type State = {
     ingredients: Ingredient[];
-} = {
+    editedIngredient: Ingredient | null;
+    editedIngredientIndex: number;
+}
+
+export type AppState = {
+    shoppingList: State
+}
+
+const initialState: State = {
     ingredients: [
         {
             id: 'i1',
@@ -17,7 +25,9 @@ const initialState: {
             name: 'Tomatoes',
             amount: 10
         },
-    ]
+    ],
+    editedIngredient: null,
+    editedIngredientIndex: -1,
 };
 
 export const shoppingListReducer = createReducer(

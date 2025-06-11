@@ -5,6 +5,8 @@ import { ShoppingListService } from '../shopping-list.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import { Store } from '@ngrx/store';
 import { ADD_INGREDIENT, UPDATE_INGREDIENT, DELETE_INGREDIENTS } from '../store/shopping-list.actions';
+import * as fromShoppingList from '../store/shopping-list.reducer';
+
 
 @Component({
   selector: 'app-shoping-edit',
@@ -17,7 +19,7 @@ export class ShopingEditComponent implements OnInit {
 
   private slServie = inject(ShoppingListService);
   private destroyRef = inject(DestroyRef);
-  private store = inject(Store<{ shoppingList: { ingredients: Ingredient[] } }>);
+  private store = inject(Store<fromShoppingList.AppState>);
 
   editMode = false;
   editedItemIndex!: number;
